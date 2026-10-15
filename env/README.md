@@ -9,8 +9,20 @@
 | `*.environment.yml` | conda 管理的包 | 定义 Python 版本和系统级依赖 |
 | `*.requirements.txt` | pip 管理的包 | 定义 Python 库及其版本 |
 
-> ⚠️ **两个文件缺一不可**：`conda env export` 不会记录 `-e`（源码安装）的包，
-> 比如 isaacgym / legged_gym / rsl_rl 就只出现在 `requirements.txt` 里。
+> ⚠️ **注意 `-e`（源码安装）的包**：`conda env export` 记录不了它们，
+> 所以 isaacgym / legged_gym / rsl_rl 这三个不在 `environment.yml` 里，
+> 只在 `requirements.txt` 末尾以注释形式列出了手动安装步骤，必须手动装。
+
+## 两个文件怎么选
+
+| | `environment.yml`（conda env export） | `requirements.txt`（pip freeze） |
+|---|---|---|
+| conda 装的包 | ✅ 记录 | ❌ 输出本机临时路径，不可用 |
+| pip 装的包 | ✅ 记录（在 `pip:` 子区） | ✅ 记录 |
+| `-e` 源码装 | ❌ 漏掉 | ⚠️ 记录了但不能直接使用 |
+
+**优先用 `conda env export`**，它两种包都能记，只有 `-e` 需要手动补。
+`pip freeze` 只适用于「该环境的包全部由 pip 安装」的情况。
 
 ## 还原步骤（以 leggedGym 为例）
 
